@@ -18,10 +18,10 @@ export const registerSchema = z.object({
 })
 
 export const transactionSchema = z.object({
-    name: z.string().min(1, { message: "Transaction name is required" }),
-    category: z.string().min(1, { message: "Category is required" }),
-    amount: z.number().min(0, { message: "Amount must be greater than 0" }),
-    date: z.string().min(1, { message: "Date is required" }).refine(value => !isNaN(new Date(value).getTime()), { message: "Invalid date" })
+    name: z.string().min(1, "Transaction name is required"),
+    category: z.string().min(1, "Category is required"),
+    amount: z.number().min(1, "Amount must be greater than 0"),
+    date: z.string().min(1, "Date is required").refine(value => !isNaN(new Date(value).getTime()), "Invalid date")
 });
 
 export type TransactionSchema = z.infer<typeof transactionSchema>

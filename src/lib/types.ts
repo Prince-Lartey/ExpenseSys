@@ -10,5 +10,6 @@ export type Transaction = RecordModel & TransactionSchema & {
 }
 
 export type Category = RecordModel & {
+    id: string
     name: string
 }

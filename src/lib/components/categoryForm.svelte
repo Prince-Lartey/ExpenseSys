@@ -2,6 +2,7 @@
 	import type { Category } from '$lib/types';
     import { createEventDispatcher, onMount } from 'svelte';
     import { toast } from 'svelte-sonner';
+    import { Loader2 } from 'lucide-svelte'
 
     export let selectedCategoryId: string | null = null; // Bound to the parent form
     const dispatch = createEventDispatcher()
@@ -31,15 +32,15 @@
     onMount(fetchCategories);
 
     function handleCategoryChange(event) {
-        const selectedCategory = event.target.value;
-        // Emit the event with the selected category
-        dispatch('categorySelect', selectedCategory);
+        selectedCategoryId = event.target.value; // Update the prop value
+        dispatch('categorySelect', selectedCategoryId); // Emit event with selected category
     }
 </script>
 
 <div class="category-form">
     {#if loading}
-        <p>Loading categories...</p>
+        <Loader2 class="size-6 animate-spin" />
+        <p class="text-sm">Loading categories...</p>
     {:else}
         <select id="category" bind:value={selectedCategoryId} on:change={handleCategoryChange} class="w-full p-2 border rounded-md">
             <option value="" disabled class="flex items-center justify-center">Select a category</option>

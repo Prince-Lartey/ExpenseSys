@@ -2,15 +2,21 @@
     import * as Form from "$lib/components/ui/form";
     import Input from "$lib/components/ui/input/input.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
+    import * as Table from "$lib/components/ui/table"
+    import Pagination from "$lib/components/Pagination.svelte"
     import { Loader2 } from 'lucide-svelte';
-    import { transactionSchema } from '$lib/schema.js';
+    import { transactionSchema } from '$lib/schema';
     import { superForm } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
     import { toast } from 'svelte-sonner';
     import CategoryForm from "$lib/components/CategoryForm.svelte";
-    import { get } from "svelte/store"
+    import { formatCurrency, formatDate } from "$lib/utils"
+    import { fly } from 'svelte/transition'
 
     export let data;
+
+    let transactions = data.transactions; // Make transactions reactive
+    const { categories, transactionForm } = data
 
     // Initialize superForm with transaction schema and client-side validation
     const form = superForm(data.transactionForm, {
@@ -23,17 +29,55 @@
     });
 
     const { form: formData, enhance, delayed, submitting } = form;
-    let selectedCategory = $formData.category;
+    let selectedCategoryId = $formData.category;
 
     // Function to handle category selection
     function handleCategorySelect(event: CustomEvent) {
         console.log("Selected Category ID:", event.detail);
-        // selectedCategory = event.detail
-        $formData.category = event.detail
+        selectedCategoryId = event.detail
+        formData.category = selectedCategoryId
     }
 
-    function handleFormSubmit(event) {
-        console.log("Form Submission:", get(formData)); // Log form data to confirm it's complete before submission
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        
+        const formElement = event.target as HTMLFormElement;
+        const formDataToSend = new FormData(formElement);
+
+        // Append category to FormData explicitly to ensure it's sent
+        formDataToSend.set('category', selectedCategoryId);
+
+        // Fetch submission to the action
+        const response = await fetch('?/createTransaction', {
+            method: 'POST',
+            body: formDataToSend,
+        });
+
+        if (response.ok) {
+            const newTransaction = await response.json();
+
+            // Re-create transactions array to trigger reactivity
+            transactions = [newTransaction, ...transactions];
+
+            // Clear form fields
+            $formData.name = '';
+            $formData.amount = '';
+            $formData.date = '';
+            $formData.category = ''
+
+            // Optionally reset selected category ID
+            selectedCategoryId = ''
+
+            toast.success("Transaction added successfully!")
+        } else {
+            const errorResponse = await response.json();
+            if (errorResponse.form) {
+                // Set the errors from the response
+                formData.errors = errorResponse.form.errors;
+                toast.error("There was an error submitting the form.");
+            }
+            
+        }
     }
 </script>
 
@@ -41,10 +85,9 @@
     <div>
         <h1 class="text-2xl">Add a Transaction</h1>
         <p class="text-xs text-muted-foreground">Enter details of your transaction below.</p>
-
         
         <!-- Form setup with superform's enhance -->
-        <form use:enhance action="?/createTransaction" method="POST" on:submit={handleFormSubmit} class="mt-5 space-y-3">
+        <form  method="POST" on:submit={handleFormSubmit} class="mt-5 space-y-3">
             <div class="flex gap-x-5">
                 <Form.Field {form} name="name">
                     <Form.Control let:attrs>
@@ -58,8 +101,7 @@
                 <Form.Field {form} name="category">
                     <Form.Control let:attrs>
                         <Form.Label>Category</Form.Label>
-                        <!-- Pass current category and bind to handleCategorySelect -->
-                        <CategoryForm selectedCategoryId={$formData.category} on:categorySelect={handleCategorySelect} />
+                        <CategoryForm bind:selectedCategoryId on:categorySelect={handleCategorySelect} />
                     </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
@@ -84,7 +126,7 @@
             <div class="flex items-center gap-x-2">
                 <Button variant="secondary" href="/">Cancel</Button>
                 <Form.Button>
-                    {#if $delayed}
+                    {#if $submitting}
                         <Loader2 class="size-6 animate-spin" />
                     {:else}
                         Save Transaction

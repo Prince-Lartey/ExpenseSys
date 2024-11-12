@@ -60,3 +60,22 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function formatCurrency(num: number) {
+	if (isNaN(num)) {
+		return
+	}
+	return new Intl.NumberFormat('en-gh', {
+		style: 'currency',
+		currency: 'GHS'
+	}).format(num)
+}
+
+export function formatDate(dateString: string) {
+	const options: Intl.DateTimeFormatOptions = { 
+		day: 'numeric', 
+		month: 'short', 
+		year: 'numeric' 
+	};
+	return new Date(dateString).toLocaleDateString('en-US', options);
+};

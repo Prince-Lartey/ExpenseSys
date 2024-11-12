@@ -13,4 +13,4 @@ export const GET: RequestHandler = async ({ locals }) => {
         console.error("Failed to fetch categories:", error);
         return json({ error: 'Failed to fetch categories' }, { status: 500 });
     }
-};
+}
