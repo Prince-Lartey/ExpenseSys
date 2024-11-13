@@ -3,6 +3,7 @@
     import * as Table from "$lib/components/ui/table"
     import Pagination from "$lib/components/Pagination.svelte"
     import type { Transaction, Category } from "$lib/types"
+    import Svelecte from 'svelecte'
 
     // Example props
     export let data
@@ -16,11 +17,22 @@
     const itemsPerPage = 5;
     let currentPage = 1
 
+    let selectedMonth: string | null = null; // Store selected month
+    // Extract the unique months from transactions for the dropdown
+    const months = [...new Set(transactions.map((transaction) => new Date((transaction as Transaction).date).toLocaleString('default', { month: 'short', year: 'numeric' })))];
+
+    // Function to get the current page's transactions
+    $: filteredTransactions = transactions.filter(transaction => {
+        if (!selectedMonth) return true; // If no month is selected, show all
+        const transactionMonth = new Date(transaction.date).toLocaleString('default', { month: 'short', year: 'numeric' });
+        return transactionMonth === selectedMonth;
+    });
+
     // Function to get the current page's transactions
     $: paginatedTransactions = () => {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        return transactions.slice(start, end);
+        return filteredTransactions.slice(start, end);
     };
 
     // Calculate total pages
@@ -44,33 +56,46 @@
     <!-- First Column -->
     <div class="space-y-5">
         <!-- Financial Summary Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div class="p-5 bg-gray-100 shadow rounded">
-                <h2 class="text-sm font-semibold mb-4">Current Balance</h2>
-                <p class="text-normal font-bold">{formatCurrency(currentBalance)}</p>
-            </div>
-            <div class="p-5 bg-gray-100 shadow rounded">
-                <h2 class="text-sm font-semibold mb-4">Total Income</h2>
-                <p class="text-normal font-bold text-green-600">{formatCurrency(totalIncome)}</p>
-            </div>
-            <div class="p-5 bg-gray-100 shadow rounded">
-                <h2 class="text-sm font-semibold mb-4">Total Expense</h2>
-                <p class="text-normal font-bold text-red-600">{formatCurrency(totalExpense)}</p>
+        <div class="px-5 bg-white rounded h-40">
+            <h2 class="text-lg font-bold mb-3">Transaction Summary</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="p-5 bg-gray-100 shadow rounded">
+                    <h2 class="text-sm font-semibold mb-4">Current Balance</h2>
+                    <p class="text-normal font-bold">{formatCurrency(currentBalance)}</p>
+                </div>
+                <div class="p-5 bg-gray-100 shadow rounded">
+                    <h2 class="text-sm font-semibold mb-4">Total Income</h2>
+                    <p class="text-normal font-bold text-green-600">{formatCurrency(totalIncome)}</p>
+                </div>
+                <div class="p-5 bg-gray-100 shadow rounded">
+                    <h2 class="text-sm font-semibold mb-4">Total Expense</h2>
+                    <p class="text-normal font-bold text-red-600">{formatCurrency(totalExpense)}</p>
+                </div>
             </div>
         </div>
 
         <!-- Graph Section -->
         <div class="p-5 bg-white shadow rounded h-64">
-            <h2 class="text-lg font-semibold mb-3">Monthly Transactions</h2>
+            <h2 class="text-lg font-bold mb-3">Monthly Transactions</h2>
             <!-- Replace with a graph component -->
             <!-- <Graph {monthlyTransactions} /> -->
-            <p>Graph showing the month against the transaction amount goes here.</p>
+            <p class="text-sm">Graph showing the month against the transaction amount goes here.</p>
         </div>
     </div>
 
     <!-- Second Column - Transaction List -->
     <div class="pb-2 px-5 shadow rounded-md">
-        <h2 class="text-lg mb-4 font-bold">Latest Transactions</h2>
+        <div class="flex gap-10">
+            <h2 class="text-lg mb-4 font-bold">Latest Transactions</h2>
+
+            <Svelecte
+                bind:value={selectedMonth}
+                options={months.map(month => ({ label: month, value: month }))}
+                placeholder="Select a month"
+                clearable
+                class=" text-sm"
+            />
+        </div>
         
         <Table.Root>
             <Table.Caption class="mb-5">A list of your recent transactions</Table.Caption>
