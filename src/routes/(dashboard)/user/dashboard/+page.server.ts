@@ -12,8 +12,6 @@ export const load = async ({ locals: { pb } }) => {
         expand: 'category',
     });
 
-    console.log("Transactions:", transactions);
-
     const initializeMonthlyData = () => {
         const months = Array.from({ length: 12 }, (_, i) => ({
             month: new Date(0, i).toLocaleString('default', { month: 'short' }),
@@ -47,10 +45,6 @@ export const load = async ({ locals: { pb } }) => {
     const totalIncome = monthlyData.reduce((sum, month) => sum + month.income, 0);
     const totalExpense = monthlyData.reduce((sum, month) => sum + month.expense, 0);
     const currentBalance = totalIncome - totalExpense;
-
-    console.log("Total Income:", totalIncome);
-    console.log("Total Expense:", totalExpense);
-    console.log("Current Balance:", currentBalance)
 
     return {
         categories,

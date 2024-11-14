@@ -37,8 +37,6 @@ export const actions: Actions = {
             amount: parseFloat(data.amount as string), // Parse the amount here
         };
 
-        console.log("Received Raw Form Data on Server:", data)
-        console.log("Processed Form Data:", parsedData);
         // Validate the form data
         const form = await superValidate(parsedData, zod(transactionSchema));
         
@@ -50,16 +48,12 @@ export const actions: Actions = {
 
         // Attempt to create the transaction in PocketBase
         try {
-            console.log("Attempting to create transaction in PocketBase with data:", form.data)
-
-            const createdTransaction = await pb.collection('transactions').create({
+            await pb.collection('transactions').create({
                 name: form.data.name,
                 category: form.data.category,
                 amount: form.data.amount,
                 date: form.data.date
             });
-
-            console.log("Transaction created successfully:", createdTransaction)
             return { success: true, message: 'Transaction created successfully' };
         } catch (e) {
             const error = e as ClientResponseError;

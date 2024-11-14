@@ -46,7 +46,7 @@
 			<Form.FieldErrors />
 		</Form.Field>
 
-        <a href='/login' class="text-sm flex items-end justify-end hover:underline cursor-pointer font-semibold mb-3">Forgot Password?</a>
+        <!-- <a href='/login' class="text-sm flex items-end justify-end hover:underline cursor-pointer font-semibold mb-3">Forgot Password?</a> -->
 
         <Form.Button class="w-full">
             {#if $submitting}

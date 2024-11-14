@@ -17,6 +17,12 @@ export const registerSchema = z.object({
     path: ['passwordConfirm']
 })
 
+export const updateSchema = z.object({
+    firstName: z.string().min(3, 'First name should be at least 3 letters'),
+    lastName: z.string().min(3, 'Last name should be at least 3 letters'),
+    email: z.string().email('Invalid email address'),
+})
+
 export const transactionSchema = z.object({
     name: z.string().min(1, "Transaction name is required"),
     category: z.string().min(1, "Category is required"),
