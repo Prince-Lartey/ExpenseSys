@@ -14,19 +14,38 @@ export const load = async ({ locals: { pb } }) => {
 
     console.log("Transactions:", transactions);
 
-    // Calculate totals
-    let totalIncome = 0;
-    let totalExpense = 0;
+    const initializeMonthlyData = () => {
+        const months = Array.from({ length: 12 }, (_, i) => ({
+            month: new Date(0, i).toLocaleString('default', { month: 'short' }),
+            income: 0,
+            expense: 0
+        }));
+        return months;
+    };
+
+    const currentYear = new Date().getFullYear(); // Default year
+    const monthlyData = initializeMonthlyData();
+
 
     transactions.forEach(transaction => {
-        const categoryName = transaction.expand?.category?.name; // Access expanded category name
-        if (categoryName === 'income') {
-            totalIncome += transaction.amount;
-        } else if (categoryName === 'expense') {
-            totalExpense += transaction.amount;
+        const transactionDate = new Date(transaction.date);
+        const transactionYear = transactionDate.getFullYear();
+        const transactionMonth = transactionDate.getMonth(); // 0-11 for Jan-Dec
+
+        // Filter transactions by the selected year
+        if (transactionYear === currentYear) {
+            const categoryName = transaction.expand?.category?.name;
+
+            if (categoryName === 'income') {
+                monthlyData[transactionMonth].income += transaction.amount;
+            } else if (categoryName === 'expense') {
+                monthlyData[transactionMonth].expense += transaction.amount;
+            }
         }
     });
 
+    const totalIncome = monthlyData.reduce((sum, month) => sum + month.income, 0);
+    const totalExpense = monthlyData.reduce((sum, month) => sum + month.expense, 0);
     const currentBalance = totalIncome - totalExpense;
 
     console.log("Total Income:", totalIncome);
@@ -39,5 +58,6 @@ export const load = async ({ locals: { pb } }) => {
         totalIncome,
         totalExpense,
         currentBalance,
+        monthlyData,
     };
 }
