@@ -8,6 +8,7 @@
     import { zodClient } from 'sveltekit-superforms/adapters'
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
+    import { toast } from "svelte-sonner"
 
     export let data
 
@@ -28,6 +29,28 @@
         document.documentElement.className = selectedTheme;
         console.log('Theme Updated:', selectedTheme);
     }
+
+    // Wrap enhance to include custom result handling
+    // Custom enhance with result handling
+    const customEnhance = (formElement: HTMLFormElement) =>
+        enhance(formElement, {
+            onResult: ({ result }) => {
+                if (result.type === "success" && result.data) {
+                    // Show success toast
+                    const message = result.data.message || "Profile updated successfully.";
+                    toast.success(message);
+
+                    // Update local form state with the server response
+                    if (result.data.data) {
+                        Object.assign($formData, result.data.data);
+                    }
+                } else if (result.type === "error") {
+                    // Extract error message for toast
+                    const errorMessage = result.error?.message || "An unknown error occurred.";
+                    toast.error(errorMessage);
+                }
+            },
+        });
 </script>
 
 <div class="px-10 ">
@@ -39,7 +62,7 @@
             <div class="border-2 p-5 rounded-xl">
                 <h2 class="text-xl font-semibold mb-3">Update Personal Information</h2>
 
-                <form method="POST" action="?/update" use:enhance>
+                <form method="POST" action="?/update" use:customEnhance>
                     <div class='grid grid-cols-2 gap-5'>
                         <Form.Field {form} name="firstName">
                             <Form.Control let:attrs>

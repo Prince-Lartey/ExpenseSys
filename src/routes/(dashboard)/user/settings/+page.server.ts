@@ -20,15 +20,24 @@ export const actions = {
         }
 
         try {
-            // Use the currently logged-in user's ID to update their details
-            await pb.collection('users').update(user?.id, form.data);
+            // Update user details in PocketBase
+            const updatedUser = await pb.collection("users").update(user?.id, form.data);
+
+            // Return success with updated data
+            return message(form, {
+                message: "Profile updated successfully.",
+                data: updatedUser
+            });
         } 
         catch (error) {
             const { status } = error as ClientResponseError;
-            return message(form, { status, message: 'An error occurred while updating your information.' });
+            return message(form, {
+                status,
+                message: "An error occurred while updating your information."
+            });
         }
 
         // Redirect or return a success message as needed
-        return message(form, { message: 'Profile updated successfully.' });
+        // return message(form, { message: 'Profile updated successfully.' });
     }
 }
