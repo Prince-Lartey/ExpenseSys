@@ -26,7 +26,7 @@ export const actions = {
             // Return success with updated data
             return message(form, {
                 message: "Profile updated successfully.",
-                data: updatedUser
+                data: { updatedUser, },
             });
         } 
         catch (error) {

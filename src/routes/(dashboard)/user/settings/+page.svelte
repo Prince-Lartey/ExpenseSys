@@ -12,12 +12,19 @@
 
     export let data
 
+    // Create a writable store for the form data
+    const formData = writable({
+        firstName: data.form.data.firstName,
+        lastName: data.form.data.lastName,
+        email: data.form.data.email,
+    });
+
     // Client side validation
     const form = superForm(data.form, {
         validators: zodClient(updateSchema)
     })
 
-    const { form: formData, enhance, delayed, submitting } = form
+    const { enhance, delayed, submitting } = form
 
     // Background theme options
     const themes = ['light', 'dark'];
@@ -36,13 +43,19 @@
         enhance(formElement, {
             onResult: ({ result }) => {
                 if (result.type === "success" && result.data) {
-                    // Show success toast
-                    const message = result.data.message || "Profile updated successfully.";
-                    toast.success(message);
+                    const { data } = result;
 
-                    // Update local form state with the server response
-                    if (result.data.data) {
-                        Object.assign($formData, result.data.data);
+                    // Show success toast
+                    toast.success(data.message || "Profile updated successfully.");
+
+                    // Manually update the reactive store with updated user data
+                    if (data.updatedUser) {
+                        // Update form data directly with new user details
+                        formData.set({
+                            firstName: data.updatedUser.firstName,
+                            lastName: data.updatedUser.lastName,
+                            email: data.updatedUser.email,
+                        });
                     }
                 } else if (result.type === "error") {
                     // Extract error message for toast
@@ -89,7 +102,7 @@
                         <Form.Control let:attrs>
                             <div class="relative my-2">
                                 <Mail class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-                                <Input type="email" {...attrs} bind:value={$formData.email} placeholder="Email" class="pl-10 py-2 border border-gray-300 rounded-md w-full focus:border-blue-500 focus:outline-none mt-3"/>
+                                <Input type="email" {...attrs} disabled bind:value={$formData.email} placeholder="Email" class="pl-10 py-2 border border-gray-300 rounded-md w-full focus:border-blue-500 focus:outline-none mt-3"/>
                             </div>
                         </Form.Control>
                         <Form.FieldErrors />
