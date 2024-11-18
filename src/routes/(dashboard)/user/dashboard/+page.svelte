@@ -6,7 +6,7 @@
     import type { Transaction, Category } from "$lib/types"
     import Svelecte from 'svelecte'
     import { onMount } from "svelte"
-    import { Trash } from 'lucide-svelte'
+    import { Trash2 } from 'lucide-svelte'
     import { toast } from 'svelte-sonner';
 
     // Example props
@@ -198,7 +198,7 @@
                             <form method="POST" action="?/deleteTransaction" on:submit={() => toast.loading('Deleting transaction...')}>
                                 <input type="hidden" name="transactionId" value={transaction.id} />
                                 <button type="submit" class="text-red-600 size-6 hover:text-red-900" on:click={(e) => {if (!confirm('Are you sure you want to delete this transaction?')) e.preventDefault();}}>
-                                    <Trash />
+                                    <Trash2 />
                                 </button>
                             </form>
                         </Table.Cell>
