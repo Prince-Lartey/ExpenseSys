@@ -5,7 +5,9 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
 import { zod } from 'sveltekit-superforms/adapters'
 
-export const load = async ({ locals: { pb } }) => {
+export const load = async ({ locals: { pb, user } }) => {
+    if (!user) throw redirect(303, '/login');
+
     // Fetch categories from PocketBase
     const categories = await pb.collection('categories').getFullList({
         sort: '-created'
@@ -13,6 +15,7 @@ export const load = async ({ locals: { pb } }) => {
 
     // Fetch transactions from PocketBase
     const transactions = await pb.collection('transactions').getFullList({
+        filter: `user = "${user?.id}"`,
         sort: '-date'
     });
 
@@ -27,7 +30,9 @@ export const load = async ({ locals: { pb } }) => {
 };
 
 export const actions: Actions = {
-    createTransaction: async ({ request, locals: { pb } }) => {
+    createTransaction: async ({ request, locals: { pb, user } }) => {
+        if (!user) throw redirect(303, '/login');
+
         const formData = await request.formData();
         const data = Object.fromEntries(formData.entries());
 
@@ -35,6 +40,7 @@ export const actions: Actions = {
         const parsedData = {
             ...data,
             amount: parseFloat(data.amount as string), // Parse the amount here
+            user: user.id, // Associate transaction with the current user
         };
 
         // Validate the form data
@@ -46,18 +52,23 @@ export const actions: Actions = {
             return fail(400, { form });
         }
 
+        if (!pb.authStore.isValid) {
+            throw new Error("User is not authenticated.");
+        }
+
         // Attempt to create the transaction in PocketBase
         try {
             await pb.collection('transactions').create({
                 name: form.data.name,
                 category: form.data.category,
                 amount: form.data.amount,
-                date: form.data.date
+                date: form.data.date,
+                user: pb.authStore.model?.id
             });
             return { success: true, message: 'Transaction created successfully' };
         } catch (e) {
             const error = e as ClientResponseError;
-            console.error("Error creating transaction:", error);
+            console.error("Error creating transaction:", error.response.data);
             return fail(500, { form, message: error.message });
         }
     }

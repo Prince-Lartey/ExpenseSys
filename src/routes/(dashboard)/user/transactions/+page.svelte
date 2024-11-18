@@ -14,6 +14,7 @@
     let transactions = data.transactions; // Make transactions reactive
     const { categories, transactionForm } = data
 
+    
     // Initialize superForm with transaction schema and client-side validation
     const form = superForm(data.transactionForm, {
         validators: zodClient(transactionSchema),
@@ -79,7 +80,7 @@
 
 <div class="mx-auto flex h-full max-w-5xl md:items-normal md:justify-normal">
     <div>
-        <h1 class="text-2xl">Add a Transaction</h1>
+        <h1 class="text-2xl font-bold">Add a Transaction</h1>
         <p class="text-xs text-muted-foreground">Enter details of your transaction below.</p>
         
         <!-- Form setup with superform's enhance -->

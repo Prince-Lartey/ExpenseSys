@@ -128,7 +128,7 @@
     <div class="space-y-5 flex flex-col">
         <!-- Financial Summary Section -->
         <div class="px-5 bg-white rounded h-40">
-            <h2 class="text-lg font-bold mb-3">Transaction Summary</h2>
+            <h2 class="text-2xl font-bold mb-3">Transaction Summary</h2>
             <div class="grid grid-cols-3 sm:grid-cols-3 gap-5">
                 <div class="p-5 bg-gray-100 shadow rounded">
                     <h2 class="text-sm font-semibold mb-4">Current Balance</h2>
@@ -148,7 +148,7 @@
         <!-- Graph Section -->
         <div class="p-5 bg-white shadow rounded">
             <div class="flex gap-10 mb-10">
-                <h2 class="text-lg font-bold mb-3">Monthly Transactions</h2>
+                <h2 class="text-2xl font-bold mb-3">Monthly Transactions</h2>
                 <Svelecte
                     bind:value={selectedYear}
                     options={availableYears.map(year => ({ label: year, value: year }))}
@@ -164,8 +164,8 @@
 
     <!-- Second Column - Transaction List -->
     <div class="pb-2 px-5 shadow rounded-md">
-        <div class="flex gap-10">
-            <h2 class="text-lg mb-4 font-bold">Latest Transactions</h2>
+        <div class="flex gap-10 ">
+            <h2 class="text-2xl mb-4 font-bold">Latest Transactions</h2>
 
             <Svelecte
                 bind:value={selectedMonth}

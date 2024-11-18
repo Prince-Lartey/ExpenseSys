@@ -13,14 +13,14 @@ export const registerSchema = z.object({
     passwordConfirm: z.string()
 })
 . refine((data) => data.password === data.passwordConfirm, {
-    message: ' Password do not match',
+    message: ' Passwords do not match',
     path: ['passwordConfirm']
 })
 
 export const updateSchema = z.object({
     firstName: z.string().min(3, 'First name should be at least 3 letters'),
     lastName: z.string().min(3, 'Last name should be at least 3 letters'),
-    email: z.string().email('Invalid email address'),
+    email: z.string().email('Invalid email address').optional(),
 })
 
 export const transactionSchema = z.object({

@@ -48,7 +48,7 @@
 
         <!-- <a href='/login' class="text-sm flex items-end justify-end hover:underline cursor-pointer font-semibold mb-3">Forgot Password?</a> -->
 
-        <Form.Button class="w-full">
+        <Form.Button class="w-full mt-3">
             {#if $submitting}
                 <Loader2 class="size-6 animate-spin"/>
             {:else}

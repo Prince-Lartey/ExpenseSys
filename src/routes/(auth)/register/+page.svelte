@@ -70,7 +70,7 @@
 			<Form.Control let:attrs>
 				<div class="relative my-2">
                     <Lock class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-                    <Input type="passwordConfirm" {...attrs} bind:value={$formData.passwordConfirm} placeholder="Confirm Password" class="pl-10 py-2 border border-gray-300 rounded-md w-full focus:border-blue-500 focus:outline-none mt-3"/>
+                    <Input type="password" {...attrs} bind:value={$formData.passwordConfirm} placeholder="Confirm Password" class="pl-10 py-2 border border-gray-300 rounded-md w-full focus:border-blue-500 focus:outline-none mt-3"/>
                 </div>
 			</Form.Control>
 			<Form.FieldErrors />

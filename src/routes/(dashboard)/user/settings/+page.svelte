@@ -15,10 +15,18 @@
 
     // Reactive statement to apply the theme class
     $: {
-        const root = document.documentElement; // Root element (<html>)
+        if (typeof document !== 'undefined') {
+            const root = document.documentElement; // Root element (<html>)
+            root.classList.toggle('dark', $settings.colorSchema === 'dark');
+            root.classList.toggle('light', $settings.colorSchema === 'light');
+        }
+    }
+
+    onMount(() => {
+        const root = document.documentElement;
         root.classList.toggle('dark', $settings.colorSchema === 'dark');
         root.classList.toggle('light', $settings.colorSchema === 'light');
-    }
+    });
 
     // Create a writable store for the form data
     const formData = writable({
@@ -67,7 +75,7 @@
 
     <!-- Personal Information Section -->
     <div class="flex flex-col lg:flex-row w-full gap-10">
-        <section class=" w-full lg:w-1/2">
+        <section class="w-full lg:w-1/2">
             <div class="border-2 p-5 rounded-xl">
                 <h2 class="text-xl font-semibold mb-3">Update Personal Information</h2>
 

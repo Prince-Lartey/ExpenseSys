@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 //Custom Store
 const defaultSettings = {
-    colorSchema: 'dark',
+    colorSchema: 'light',
     language: 'en',
     fontSize: 12
 }
