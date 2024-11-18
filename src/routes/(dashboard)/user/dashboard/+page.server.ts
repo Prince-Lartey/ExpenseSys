@@ -1,4 +1,4 @@
-
+import { error, redirect } from '@sveltejs/kit'
 
 export const load = async ({ locals: { pb } }) => {
     // Fetch categories from PocketBase
@@ -55,3 +55,25 @@ export const load = async ({ locals: { pb } }) => {
         monthlyData,
     };
 }
+
+export const actions = {
+    deleteTransaction: async ({ request, locals: { pb } }) => {
+        try {
+            // Parse the transaction ID from the form data
+            const formData = await request.formData();
+            const transactionId = formData.get('transactionId') as string;
+
+            if (!transactionId) {
+                throw error(400, 'Transaction ID is required');
+            }
+
+            // Perform the deletion in PocketBase
+            await pb.collection('transactions').delete(transactionId);
+
+            return { success: true };
+        } catch (err) {
+            console.error('Error deleting transaction:', err);
+            throw error(500, 'Failed to delete transaction');
+        }
+    }
+};

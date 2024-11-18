@@ -1,10 +1,13 @@
 <script lang="ts">
     import { formatCurrency, formatDate } from "$lib/utils"
     import * as Table from "$lib/components/ui/table"
+    import Button from "$lib/components/ui/button/button.svelte"; 
     import Pagination from "$lib/components/Pagination.svelte"
     import type { Transaction, Category } from "$lib/types"
     import Svelecte from 'svelecte'
     import { onMount } from "svelte"
+    import { Trash } from 'lucide-svelte'
+    import { toast } from 'svelte-sonner';
 
     // Example props
     export let data
@@ -181,6 +184,7 @@
                     <Table.Head class="border-r">Category</Table.Head>
                     <Table.Head class="border-r">Amount</Table.Head>
                     <Table.Head class="border-r">Date</Table.Head>
+                    <Table.Head class="border-r">Action</Table.Head>
                 </Table.Row>
             </Table.Header>
             <Table.Body class="border-b">
@@ -190,6 +194,14 @@
                         <Table.Cell class="border-r">{categoryMap[transaction.category]}</Table.Cell>
                         <Table.Cell class="border-r">{formatCurrency(transaction.amount)}</Table.Cell>
                         <Table.Cell class="border-r">{formatDate(transaction.date)}</Table.Cell>
+                        <Table.Cell class="border-r">
+                            <form method="POST" action="?/deleteTransaction" on:submit={() => toast.loading('Deleting transaction...')}>
+                                <input type="hidden" name="transactionId" value={transaction.id} />
+                                <button type="submit" class="text-red-600 size-6 hover:text-red-900" on:click={(e) => {if (!confirm('Are you sure you want to delete this transaction?')) e.preventDefault();}}>
+                                    <Trash />
+                                </button>
+                            </form>
+                        </Table.Cell>
                     </Table.Row>
                 {/each}
             </Table.Body>
@@ -199,5 +211,4 @@
             <Pagination totalPages={calculateTotalPages()} {currentPage} on:pageChange={onPageChange} />
         </div>
     </div>
-    
 </div>
