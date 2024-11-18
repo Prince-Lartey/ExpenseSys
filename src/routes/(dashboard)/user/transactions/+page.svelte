@@ -2,17 +2,13 @@
     import * as Form from "$lib/components/ui/form";
     import Input from "$lib/components/ui/input/input.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
-    import * as Table from "$lib/components/ui/table"
-    import Pagination from "$lib/components/Pagination.svelte"
     import { Loader2 } from 'lucide-svelte';
     import { transactionSchema } from '$lib/schema';
     import { superForm } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
     import { toast } from 'svelte-sonner';
-    import CategoryForm from "$lib/components/CategoryForm.svelte";
-    import { formatCurrency, formatDate } from "$lib/utils"
-    import { fly } from 'svelte/transition'
-
+    import CategoryForm from "$lib/components/categoryForm.svelte";
+    
     export let data;
 
     let transactions = data.transactions; // Make transactions reactive
@@ -124,7 +120,7 @@
             </div>
 
             <div class="flex items-center gap-x-2">
-                <Button variant="secondary" href="/">Cancel</Button>
+                <Button variant="secondary" href="/user/dashboard">Cancel</Button>
                 <Form.Button>
                     {#if $submitting}
                         <Loader2 class="size-6 animate-spin" />

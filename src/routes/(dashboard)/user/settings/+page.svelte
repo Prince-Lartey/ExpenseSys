@@ -9,8 +9,16 @@
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import { toast } from "svelte-sonner"
+    import settings from "$lib/stores/settings"
 
     export let data
+
+    // Reactive statement to apply the theme class
+    $: {
+        const root = document.documentElement; // Root element (<html>)
+        root.classList.toggle('dark', $settings.colorSchema === 'dark');
+        root.classList.toggle('light', $settings.colorSchema === 'light');
+    }
 
     // Create a writable store for the form data
     const formData = writable({
@@ -26,18 +34,6 @@
 
     const { enhance, delayed, submitting } = form
 
-    // Background theme options
-    const themes = ['light', 'dark'];
-    let selectedTheme = themes[0];
-
-    // Update appearance settings
-    function toggleTheme() {
-        selectedTheme = selectedTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.className = selectedTheme;
-        console.log('Theme Updated:', selectedTheme);
-    }
-
-    // Wrap enhance to include custom result handling
     // Custom enhance with result handling
     const customEnhance = (formElement: HTMLFormElement) =>
         enhance(formElement, {
@@ -124,40 +120,16 @@
         <!-- Appearance Section -->
         <section class="w-full lg:w-1/2">
             <div class="border-2 p-5 rounded-xl">
-                <h2 class="text-xl font-semibold mb-3">Toggle Background Appearance</h2>
-                <div class="toggle-switch {selectedTheme}" on:click={toggleTheme}>
-                    <div class="toggle-knob"></div>
-                </div>
-                <p class="mt-2 text-sm font-semibold">{selectedTheme === 'light' ? 'Light Mode' : 'Dark Mode'}</p>
+                <h2 class="text-xl font-semibold mb-5">Toggle Background Appearance</h2>
+                <label>
+                    <input type="radio" name="colorSchema" value="dark" on:change={() => settings.updateSettings('colorSchema', 'dark')} checked={$settings.colorSchema === 'dark'}/>
+                    Dark
+                </label>
+                <label>
+                    <input type="radio" name="colorSchema" value="light" on:change={() => settings.updateSettings('colorSchema', 'light')} checked={$settings.colorSchema === 'light'}/>
+                    Light
+                </label>
             </div>
         </section>
     </div>
 </div>
-
-<style>
-    .toggle-switch {
-        width: 50px;
-        height: 24px;
-        background-color: #ccc;
-        border-radius: 12px;
-        position: relative;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .toggle-switch.dark {
-        background-color: #4a5568; /* Dark mode color */
-    }
-    .toggle-knob {
-        width: 20px;
-        height: 20px;
-        background-color: white;
-        border-radius: 50%;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s ease;
-    }
-    .toggle-switch.dark .toggle-knob {
-        transform: translateX(26px); /* Move the knob to the right */
-    }
-</style>

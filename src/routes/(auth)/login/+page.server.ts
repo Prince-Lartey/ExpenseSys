@@ -26,6 +26,6 @@ export const actions = {
             const { status } = error as ClientResponseError
             return message(form, { status, message: 'Invalid email or password.' })
         }
-        redirect(303, '/')
+        redirect(303, '/user/dashboard')
     }
 }
