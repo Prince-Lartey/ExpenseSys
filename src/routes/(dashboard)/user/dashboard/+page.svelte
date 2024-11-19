@@ -127,26 +127,26 @@
     <!-- First Column -->
     <div class="space-y-5 flex flex-col">
         <!-- Financial Summary Section -->
-        <div class="px-5 bg-white rounded h-40">
+        <div class="px-5 pt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded h-[180px]">
             <h2 class="text-2xl font-bold mb-3">Transaction Summary</h2>
             <div class="grid grid-cols-3 sm:grid-cols-3 gap-5">
-                <div class="p-5 bg-gray-100 shadow rounded">
+                <div class="p-5 bg-gray-100 dark:bg-gray-700 shadow rounded">
                     <h2 class="text-sm font-semibold mb-4">Current Balance</h2>
-                    <p class="text-normal font-bold">{formatCurrency(currentBalance)}</p>
+                    <p class="text-normal font-bold dark:text-gray-300">{formatCurrency(currentBalance)}</p>
                 </div>
-                <div class="p-5 bg-gray-100 shadow rounded">
+                <div class="p-5 bg-gray-100 dark:bg-gray-700 shadow rounded">
                     <h2 class="text-sm font-semibold mb-4">Total Income</h2>
-                    <p class="text-normal font-bold text-green-600">{formatCurrency(totalIncome)}</p>
+                    <p class="text-normal font-bold text-green-600 dark:text-green-400">{formatCurrency(totalIncome)}</p>
                 </div>
-                <div class="p-5 bg-gray-100 shadow rounded">
+                <div class="p-5 bg-gray-100 dark:bg-gray-700 shadow rounded">
                     <h2 class="text-sm font-semibold mb-4">Total Expense</h2>
-                    <p class="text-normal font-bold text-red-600">{formatCurrency(totalExpense)}</p>
+                    <p class="text-normal font-bold text-red-600 dark:text-red-400">{formatCurrency(totalExpense)}</p>
                 </div>
             </div>
         </div>
 
         <!-- Graph Section -->
-        <div class="p-5 bg-white shadow rounded">
+        <div class="p-5 bg-white dark:bg-gray-800 shadow rounded">
             <div class="flex gap-10 mb-10">
                 <h2 class="text-2xl font-bold mb-3">Monthly Transactions</h2>
                 <Svelecte
@@ -176,7 +176,7 @@
             />
         </div>
         
-        <Table.Root>
+        <Table.Root >
             <Table.Caption class="mb-5">A list of your recent transactions</Table.Caption>
             <Table.Header class="">
                 <Table.Row class="border-t">
@@ -212,3 +212,4 @@
         </div>
     </div>
 </div>
+
